@@ -1,78 +1,7 @@
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
-
-path = "./data/cs-training.csv"
-data = pd.read_csv(path).drop("Unnamed: 0", axis=1)
-#data.rename(columns={"Unnamed: 0": "ID"}, inplace=True)
-#data.drop("ID", axis=1)
-print(data.head())
-print(data.columns)
-cleancolunms = []
-for i in range(len(data.columns)):
-    cleancolunms.append(data.columns[i].replace('-', '').lower())
-data.columns = cleancolunms
-print(data.head())
-data_col = data[data.columns[1:]]
-print(data_col.describe())
-print('median(중위수):\n', data_col.median(), '\n')
-print('mean(평균):', data_col.mean())
-print('colunms:', data.columns)
-total_len = len(data['seriousdlqin2yrs'])
-percentage_labels = (data['seriousdlqin2yrs'].value_counts()/total_len)*100
-print(percentage_labels)
-print(data['seriousdlqin2yrs'].value_counts())
-#표적 레이블
-sns.countplot(data.seriousdlqin2yrs).set_title('Data Distribution')
-ax = plt.gca()
-for p in ax.patches:
-    height = p.get_height()
-    ax.text(p.get_x() + p.get_width()/2., height + 2, '{:.2f}%'.format(100*(height/total_len)),
-            fontsize=14, ha='center', va='bottom')
-
-sns.set(font_scale=1.5)
-ax.set_xlabel("labels for seriousdlqin2yrs attribute")
-ax.set_ylabel("Numbers of records")
-plt.show()
-
-# 결측값 그래픽 시각화
-x = data.columns
-y = data.isnull().sum()
-
-sns.barplot(x, y)
-ax = plt.gca()
-for p in ax.patches:
-    height = p.get_height()
-    ax.text(p.get_x() + p. get_width()/2.,
-            height + 2,
-            int(height),
-            fontsize=12, ha='center', va='bottom')
-
-ax.set_xlabel("Data Attributes")
-ax.set_ylabel("count of missing records for each attributes")
-plt.xticks(rotation=90)
-plt.show()
-
-data_mean_replace = data.fillna((data.mean()))
-
-print(data_mean_replace.head())
-print(data_mean_replace.isnull().sum())
-
-data_median_replace = data.fillna((data.median()))
-
-print(data_median_replace.head())
-print(data_mean_replace.isnull().sum())
-
-#상관관계
-
-data_median_replace[data_median_replace.columns[1:]].corr()
-
-sns.set()
-sns.heatmap(data_median_replace[data_median_replace.columns[1:]].corr(), annot=True, fmt=".1f",
-            cmap=(sns.cubehelix_palette(8, start=5, rot=-.75)))
-plt.show()
-
 '''
     이상점 검출기법
     - 백분위수 기반의 이상점 검출
@@ -175,4 +104,3 @@ def plotOutlier(x):
     fig = plt.gcf()
     fig.set_size_inches(15, 10)
     plt.show()
-out_plt = plotOutlier(data_median_replace.revolvingutilizationofunsecuredlines.sample(5000))
